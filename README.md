@@ -41,6 +41,7 @@
 
 # Gulp x Grunt
 
+- Ambos são chamados de __Build Tools__
 - Gulp é mais rápido para executar tarefas porque executa-as em paralelo.
 - As tarefas no Gulp são escritas num roteiro Javascrit. No Grunt, é um objeto javasript de configuração
 - Gulp faz o stream dos arquivos internamente e isso diminui o I/O.
@@ -48,6 +49,7 @@
 # Instalar Gulp
 
 - https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md
+
 ```bash
 # 1 . Install gulp globally
 $ sudo npm install --global gulp-cli 
@@ -62,6 +64,113 @@ $ touch gulpfile.js
 //gulpfile.js
 var gulp = require('gulp');
 gulp.task('default', function() {
-  // place code for your default task here
+  console.log("Hello!")
 });
 ```
+
+# gulp-sass
+
+```bash
+$ sudo npm install gulp-sass
+```
+
+- Crie um diretório ```/sass``` sob o diretório raíz do seu projeto. 
+- Mova seus arquivos __.css__ para ```/sass``` e mude a extensão dos arquivos para __.scss__
+- Acrescente em gulpfile.js
+```javascript
+var sass = require('gulp-sass');
+//...
+gulp.task('styles', function() {
+    gulp.src('sass/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./css'))
+})
+```
+
+# gulp-autoprefixer
+
+Adds vendor prefixes to CSS rules using values from [Can I Use](http://caniuse.com/#cats=CSS)
+
+```bash
+npm install --save-dev gulp-autoprefixer
+```
+
+- Acrescente em gulpfile.js
+```javascript
+var sass = require('gulp-autoprefixer');
+//...
+gulp.task('styles', function() {
+	gulp.src('sass/**/*.scss')
+		.pipe(sass().on('error', sass.logError))
+		.pipe(autoprefixer({
+			browsers: ['last 2 versions']
+		}))
+		.pipe(gulp.dest('./css'));
+});
+```
+
+> ## Troubleshoot
+> **Descrição**
+> 
+> Ao rodar ```$ gulp styles```, tive a seguinte mensagem de erro: 
+> 
+> ```ReferenceError: Promise is not defined```
+> - Ubuntu 14.04
+> - node: v0.10.35
+> - gulp-autoprefixer: 3.1.0
+> 
+> **Solução:**
+> 
+> ```$ sudo npm install es6-promise```
+> 
+> Incluir na 1a linha de gulpfile.js
+> 
+> ```var Promise = require('es6-promise').Promise;```
+
+# gulp-watch
+
+```bash
+$ sudo npm install --save-dev gulp-watch
+```
+
+- Acrescente em gulpfile.js
+```javascript
+var watch = require('gulp-watch');
+//...
+gulp.task('styles', function() {
+	gulp.src('sass/**/*.scss')
+		.pipe(sass().on('error', sass.logError))
+		.pipe(autoprefixer({
+			browsers: ['last 2 versions']
+		}))
+		.pipe(gulp.dest('./css'));
+});
+```
+
+# browser-sync
+
+Browsersync will start a mini-server and provide a URL to view your site.
+
+```bash
+$ sudo npm install --save-dev browser-sync
+```
+
+- Acrescente em gulpfile.js
+```javascript
+var browserSync = require('browser-sync').create();
+// ...
+browserSync.init({
+    server: "./"
+});
+browserSync.stream();
+```
+ 
+# ESLint
+ 
+```bash
+# Instalar eslint
+$ sudo npm install -g eslint
+# Criar arquivo de configuração .eslintrc.js
+$ eslint --init
+```
+

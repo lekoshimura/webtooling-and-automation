@@ -1,24 +1,22 @@
-var Promise = require('es6-promise').Promise;
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var browserSync = require('browser-sync').create();
-// var watch = require('gulp-watch');
 
-gulp.task('default', function() {
-	gulp.watch('sass/**/*.scss', ['styles'])
+gulp.task('default', ['styles'], function() {
+	gulp.watch('sass/**/*.scss', ['styles']);
+
+	browserSync.init({
+		server: './'
+	});
 });
 
 gulp.task('styles', function() {
-	gulp.src('./sass/**/*.scss')
+	gulp.src('sass/**/*.scss')
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer({
 			browsers: ['last 2 versions']
 		}))
-		.pipe(gulp.dest('./css'));
+		.pipe(gulp.dest('./css'))
+		.pipe(browserSync.stream());
 });
-
-browserSync.init({
-    server: "./"
-});
-browserSync.stream();
