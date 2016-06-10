@@ -166,11 +166,53 @@ browserSync.stream();
 ```
  
 # ESLint
- 
+
+Segui as intruções em [Getting Started with ESLint](http://eslint.org/docs/user-guide/getting-started) 
+e não consegui fazer o ESLint funcionar com os plugins _Sublime Linter_ e _linter-eslint_. 
+Usei Ubuntu (14 e 15), (Atom e Sublime) e Gulp. 
+
+Concluí que a instalação não deve usar o parâmetro ```-g``` no ```npm``` e nem 
+```sudo```. 
+
 ```bash
-# Instalar eslint
+# Não funciona 
 $ sudo npm install -g eslint
-# Criar arquivo de configuração .eslintrc.js
-$ eslint --init
 ```
 
+Funcionou quando instalei todos os módulos no diretório do projeto (sem ```sudo```).
+
+```
+# Criar packages.js
+$ npm init
+# Instalar gulp, eslint e gulp-eslint no diretório /node_modules do projeto. 
+$ npm install --save-dev gulp
+$ npm install --save-dev eslint 
+$ npm install --save-dev gulp-eslint
+# Criar arquivo de configuração .eslintrc.js
+$ ./node_modules/eslint/bin/eslint.js --init
+# Escolhi: 
+# ? Answer questions about your style
+# ? Are you using ECMAScript 6 features? n
+# ? Where will your code run? Browser
+# ? Do you use CommonJS? No
+# ? Do you use JSX? No
+# ? What style of indentation do you use? Tabs
+# ? What quotes do you use for strings? Single
+# ? What line endings do you use? Unix
+# ? Do you require semicolons? Yes
+# ? What format do you want your config file to be in? JSON
+```
+
+- gulp-eslint não depende de ESLint mas procura por .eslintrc.json.
+
+Em gulpfile.js: 
+```javascript
+var eslint = require('gulp-eslint');
+// ...
+gulp.task('lint', function () {
+    return gulp.src(['./js/**/*.js','!node_modules/**'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+```
